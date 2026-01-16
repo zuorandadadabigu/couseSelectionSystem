@@ -15,6 +15,7 @@ public:
     bool hasId(string id);
     string roster();
     string info();
+    void changeCapacityTo(int newCapacity);
 private:
     string m_id;//课程号
     string m_name;//课程名
@@ -24,6 +25,7 @@ private:
     vector<class Student*> _students;
     //成绩
     static int cm_totalCount;//当前选课人数
+    void changeCapacity(int newCapacity);
 };
 
 int Course::cm_totalCount = 0; // initialize static data memeber
@@ -51,8 +53,20 @@ bool Course::addStudent(Student *student){
 string Course::info(){
     return format("{}   {}\n", m_id, m_name);
 }
-//getCapacity
 
 bool Course::hasId(string id){
     return id == m_id;
+}
+
+void Course::changeCapacityTo(int newCapacity){
+    if(newCapacity > 0){
+        changeCapacity(newCapacity);
+    }else{
+        print("课容量须为正数\n");
+    }
+    return;
+}
+
+void Course::changeCapacity(int newCapacity){
+    m_maximum = newCapacity;
 }

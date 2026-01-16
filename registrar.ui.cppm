@@ -25,7 +25,8 @@ public:
     int exec();
 private:
     Registrar& m_registrar;
-    int identifyconst(string& input);
+    int identify(const string& input);
+    void identifyService(int i,const string& input);
 };
 
 //===========================================基本功能=========================================
@@ -90,8 +91,8 @@ void Ui::identifyService(int i,const string input)
             //教师服务
             const Teacher* t = m_registrar.findTeacherById(input);
             if(t){
-                prompt_teacher();
-                service_teacher();
+                prompt_teacher(t);
+                service_teacher(t);
             }else{
                 print("此用户不存在.\n");
             }
@@ -100,8 +101,8 @@ void Ui::identifyService(int i,const string input)
             //秘书服务
             const Sectary* a = m_registrar.findSectaryById(input);
             if(a){
-                prompt_sectary();
-                service_sectary();
+                prompt_sectary(a);
+                service_sectary(a);
             }else{
                 print("此用户不存在.\n");
             }
@@ -110,8 +111,8 @@ void Ui::identifyService(int i,const string input)
             //学生服务
             const Student* s = m_registrar.findStudentById(input);
             if(s){
-                prompt_student();
-                service_student();
+                prompt_student(s);
+                service_student(s);
             }else{
                 print("此用户不存在.\n");
             }
@@ -129,7 +130,7 @@ void Ui::prompt(){
 }
 
 void Ui::prompt_student(Student* student){
-    print("Hello,{}! Please choose the service which you want:\n",student.name);
+    print("Hello,{}! Please choose the service which you want:\n",student.m_name);
     print("1.查看待选课程\n");
     print("2.选课\n");
     print("3.退课\n");
@@ -138,7 +139,7 @@ void Ui::prompt_student(Student* student){
 }
 
 void Ui::prompt_teacher(Teacher* teacher){
-    print("Hello,{}! Please choose the service which you want:\n",teacher.name);
+    print("Hello,{}! Please choose the service which you want:\n",teacher.m_name);
     print("1.查看授课课程学生信息\n");
     print("2.上传成绩\n");
     print("3.查看学生成绩\n");
@@ -146,14 +147,14 @@ void Ui::prompt_teacher(Teacher* teacher){
 }
 
 void Ui::prompt_sectary(Sectary* sectary){
-    print("Hello,{}! Please choose the service which you want:\n",sectary.name);
+    print("Hello,{}! Please choose the service which you want:\n",sectary.m_name);
     print("1.展示所有学生信息\n");
     print("2.展示所有课程信息\n");
     print("3.修改课容量\n");
     print("0.退出登陆\n");
 }
 //=========================================================服务============================================
-void Ui::service_student(){
+void Ui::service_student(Student* student){
     int service = getInput;
     switch(service){
         case 1:
@@ -171,7 +172,7 @@ void Ui::service_student(){
     }
 }
 
-void Ui::service_teacher(){
+void Ui::service_teacher(Teacher* teacher){
     int service = getInput;
     switch(service){
         case 1:
@@ -186,7 +187,7 @@ void Ui::service_teacher(){
     }
 }
 
-void Ui::service_sectary(){
+void Ui::service_sectary(Sectary* sectary){
     int service = getInput();
     switch(service){
         case 1:

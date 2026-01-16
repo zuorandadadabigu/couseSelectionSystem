@@ -10,7 +10,7 @@ using std::string;
 export class Sectary{
 public:
     Sectray(Registrar& registrar,string id,string name);
-    bool hasId(string id);
+    bool hasId(const string& id);
     void showAllStudent();//展示所有学生信息
     void showAllCourse();//展示所有课程信息
     void adjustCourseCapacity();//修改课容量
@@ -36,11 +36,11 @@ void Sectary::adjustCourseCapacity(){
     for(const auto& course : registrar._courses){
         if(course->hasId(courseId)){
             int newCapacity;
-            print("当前课容量：{}，请输入新容量：",course->maximum);
+            print("当前课容量：{}，请输入新容量：",course->m_maximum);
             cin >> newCapacity;
             if(newCapacity > 0){
-                course->maximum = newCapacity;
-                print("课程{}课容量已修改为{}\n",course->name,newCapacity);
+                course->changeCapacityTo(newCapacity);
+                print("课程{}课容量已修改为{}\n",course->m_name,newCapacity);
             }else {
                 print("课容量须为正数\n");
             }
@@ -53,7 +53,7 @@ void Sectary::adjustCourseCapacity(){
 
 void Sectary::showAllStudent(){
     print("学号          学生姓名\n");
-    for(const auto& student : registrar._students){
+    for(const auto& student : m_registrar._students){
         student->info();
     }
     return;
@@ -61,7 +61,7 @@ void Sectary::showAllStudent(){
 
 void Sectary::showAllCourse(){
     print("课程号          课程名\n");
-    for(const auto& course : registrar._courses){
+    for(const auto& course : m_registrar._courses){
         course->info();
     }
     return;
