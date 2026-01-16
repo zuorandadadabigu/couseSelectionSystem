@@ -1,5 +1,10 @@
 export module registrar:course;
 
+import std;
+using std::print;
+using std::vector;
+using std::string;
+
 export class Course{
 public:
     Course(string id, string name,int credit,string teacher,int maximum,int totalCount);
@@ -46,7 +51,7 @@ bool Course::addStudent(Student *student){
 string Course::info(){
     return format("{}   {}\n", m_id, m_name);
 }
-
+//getCapacity
 
 bool Course::hasId(string id){
     return id == m_id;

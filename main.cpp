@@ -1,4 +1,5 @@
 import std;
+import registrar;
 
 int main()
 {
