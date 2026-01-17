@@ -17,9 +17,6 @@ export class Sectary {
 public:
     Sectary(Registrar& registrar, const string& id, const string& name);
 
-    const string& getName() const { return m_name; }
-    bool hasId(const string& id) const { return id == m_id; }
-
     void showAllStudent();
     void showAllCourse();
     void adjustCourseCapacity();
@@ -37,14 +34,14 @@ Sectary::Sectary(Registrar& registrar, const string& id, const string& name)
 void Sectary::showAllStudent() {
     print("\n所有学生信息:\n");
     print("学号     姓名\n");
-    for (const auto& student : m_registrar.getStudents()) {
+    for (const auto& student : m_registrar._student) {
         student->showInfo();
     }
 }
 
 void Sectary::showAllCourse() {
     print("\n所有课程信息:\n");
-    for (const auto& course : m_registrar.getCourses()) {
+    for (const auto& course : m_registrar._courses) {
         course->showInfo();
     }
 }
@@ -58,7 +55,7 @@ void Sectary::adjustCourseCapacity() {
     Course* course = m_registrar.findCourseById(courseId);
     if (course) {
         print("当前课容量: {}，已选人数: {}，请输入新容量: ",
-            course->getMaximum(), course->getStudentCount());
+            course->m_maximum(), course->_stuednt.size());
         int newCapacity;
         cin >> newCapacity;
         course->changeCapacityTo(newCapacity);

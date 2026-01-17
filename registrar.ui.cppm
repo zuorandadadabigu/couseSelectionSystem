@@ -19,13 +19,13 @@ public:
     // 输出总菜单
     void prompt();
     // 根据不同身份输出不同的功能菜单
-    void prompt_student(Student* student);
-    void prompt_teacher(Teacher* teacher);
-    void prompt_sectary(Sectary* sectary);
+    void promptStudent(Student* student);
+    void promptTeacher(Teacher* teacher);
+    void promptSectary(Sectary* sectary);
     // 根据不同身份的菜单执行用户选择的功能
-    void service_student(Student* student);
-    void service_teacher(Teacher* teacher);
-    void service_sectary(Sectary* sectary);
+    void serviceStudent(Student* student);
+    void serviceTeacher(Teacher* teacher);
+    void serviceSectary(Sectary* sectary);
     // 主流程
     int exec();
 

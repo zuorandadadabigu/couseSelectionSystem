@@ -17,7 +17,6 @@ export class Course {
 public:
     Course(const string& id, const string& name, int credit, Teacher* teacher, int maximum);
 
-    const string& getTeacherName() const;
     bool hasId(const string& id);
     bool addStudent(Student* student);
     void removeStudent(Student* student);
