@@ -1,74 +1,63 @@
 export module registrar:sectary;
-
 import std;
 import registrar;
+import :course;
+import :student;
 
-using std::vector;
 using std::print;
 using std::string;
+using std::cin;
 
-export class Sectary{
+export class Sectary {
 public:
-    Sectray(Registrar& registrar,string id,string name);
-    bool hasId(const string& id);
-    void showAllStudent();//展示所有学生信息
-    void showAllCourse();//展示所有课程信息
-    void adjustCourseCapacity();//修改课容量
+    Sectary(Registrar& registrar, const string& id, const string& name);
+
+    const string& getName() const { return m_name; }
+    bool hasId(const string& id) const { return id == m_id; }
+
+    void showAllStudent();
+    void showAllCourse();
+    void adjustCourseCapacity();
+
 private:
-    int m_id;//秘书号
-    string m_name;//名字
+    string m_id;
+    string m_name;
     Registrar& m_registrar;
 };
 
-Sectray(Registrar& registrar,string id,string name)
-    :m_id(id)
-    ,m_name(name)
-    ,m_registrar(registrar)
+Sectary::Sectary(Registrar& registrar, const string& id, const string& name)
+    : m_id(id), m_name(name), m_registrar(registrar)
 {}
 
+void Sectary::showAllStudent() {
+    print("\n所有学生信息:\n");
+    print("学号     姓名\n");
+    for (const auto& student : m_registrar.getStudents()) {
+        student->showInfo();
+    }
+}
 
+void Sectary::showAllCourse() {
+    print("\n所有课程信息:\n");
+    for (const auto& course : m_registrar.getCourses()) {
+        course->showInfo();
+    }
+}
 
-void Sectary::adjustCourseCapacity(){
+void Sectary::adjustCourseCapacity() {
     showAllCourse();
-    print("请输入你要修改课容量的课程的课程号:\n");
+    print("\n请输入你要修改课容量的课程的课程号: ");
     string courseId;
     cin >> courseId;
-    for(const auto& course : registrar._courses){
-        if(course->hasId(courseId)){
-            int newCapacity;
-            print("当前课容量：{}，请输入新容量：",course->m_maximum);
-            cin >> newCapacity;
-            if(newCapacity > 0){
-                course->changeCapacityTo(newCapacity);
-                print("课程{}课容量已修改为{}\n",course->m_name,newCapacity);
-            }else {
-                print("课容量须为正数\n");
-            }
-            return;
-        }
+
+    Course* course = m_registrar.findCourseById(courseId);
+    if (course) {
+        print("当前课容量: {}，已选人数: {}，请输入新容量: ",
+            course->getMaximum(), course->getStudentCount());
+        int newCapacity;
+        cin >> newCapacity;
+        course->changeCapacityTo(newCapacity);
+    } else {
+        print("未找到该课程.\n");
     }
-    print("未找到该课程.\n");
 }
-
-
-void Sectary::showAllStudent(){
-    print("学号          学生姓名\n");
-    for(const auto& student : m_registrar._students){
-        student->info();
-    }
-    return;
-}
-
-void Sectary::showAllCourse(){
-    print("课程号          课程名\n");
-    for(const auto& course : m_registrar._courses){
-        course->info();
-    }
-    return;
-}
-
-bool Sectary::hasId(string id)
-{
-    return id == m_id;
-}
-

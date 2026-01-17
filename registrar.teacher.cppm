@@ -1,66 +1,68 @@
-// Module partition teacher : define teacher class
-// File: teacher.cppm  Version: 1.0
-// Created: Yuxin Zhou   1946296724@qq.com   2026-1-16
-// Description:
-// Change Log:
-//     [v0.1.1] Yuxin Zhou 1946296s724@qq.com  2026-1-16
-
 export module registrar:teacher;
-import course;
-import student;
+import std;
+import :student;
+import :course;
 
-// 私有属性id/name，公有方法
+using std::string;
+using std::print;
+using std::cin;
+
 export class Teacher {
-private:
-    int id;
-    std::string name;
-
 public:
-    // 构造函数（初始化id和name）
-    Teacher(int teacherId, std::string_view teacherName)
-        : id(teacherId), name(teacherName) {}
+    Teacher(const string& id, const string& name);
+    bool hasId(const string& id);
 
-    // 展示课程信息
-    void courseMessage(const Course& course) const;
+    void showCourseInfo() const;
+    void showCourseStudents() const;
+    void addCourseGrade(Student& student, float grade);
 
-    // 为学生添加课程成绩
-    void addCourseGrade(Student& student, const Course& course, float grade);
-
-    // 展示课程成绩
-    void showCourseGrade(const Student& student, const Course& course) const;
-
-    int getId() const { return id; }
-    const std::string& getName() const { return name; }
+private:
+    string m_id;
+    string m_name;
+    Course* m_course = nullptr;
 };
 
-// 实现courseMessage：使用print函数输出课程信息
-void Teacher::courseMessage(const Course& course) const {
-    print("【教师{}】课程信息：名称={} 学分={} 容量={}",
-          name, course.getName(), course.getCredit(), course.getMaximum());
-}
+Teacher::Teacher(const string& id, const string& name)
+    : m_id(id), m_name(name), m_course(nullptr)
+{}
 
-// 实现addCourseGrade：使用print函数输出成绩录入信息
-void Teacher::addCourseGrade(Student& student, const Course& course, float grade) {
-    if (grade < 0.0f || grade > 100.0f) {
-        throw std::invalid_argument("成绩必须在0-100之间");
+void Teacher::showCourseInfo() const {
+    if (!m_course) {
+        print("暂无授课课程\n");
+        return;
     }
-    student.setCourseGrade(course.getId(), grade);
-    print("【教师{}】为学生{}的课程《{}》录入成绩：{}",
-          name, student.getName(), course.getName(), grade);
+    print("教师: {}\n课程信息:\n", m_name);
+    print("课程号: {}  课程名: {}  学分: {}  容量: {}/{}\n",
+        m_course->m_id, m_course->m_name, m_course->m_credit,
+        m_course->_students.size(), m_course->m_maximum;
 }
 
-// 实现showCourseGrade：使用print函数输出成绩展示信息
-void Teacher::showCourseGrade(const Student& student, const Course& course) const {
-    try {
-        float grade = student.getCourseGrade(course.getId());
-        print("【教师{}】学生{}的课程《{}》成绩：{}",
-              name, student.getName(), course.getName(), grade);
-    } catch (const std::out_of_range& e) {
-        print("【教师{}】学生{}未修读课程《{}》",
-              name, student.getName(), course.getName());
+void Teacher::showCourseStudents() const {
+    if (!m_course) {
+        print("暂无授课课程\n");
+        return;
     }
+    print("已选课程《{}》的学生:\n", m_course->m_name());
+    m_course->showStudents();
 }
 
+void Teacher::addCourseGrade(Student& student, float grade) {
+    if (!m_course) {
+        print("暂无授课课程\n");
+        return;
+    }
 
+    if (grade < 0 || grade > 100) {
+        print("成绩必须在0-100之间\n");
+        return;
+    }
 
+    m_course->setStudentGrade(&student, grade);
+    print("教师{}为学生{}的课程《{}》录入成绩: {}\n",
+        m_name, student.m_name(), m_course->m_name(), grade);
+}
 
+bool Teacher::hasId(string id)
+{
+    return id == m_id;
+}

@@ -1,104 +1,111 @@
-// File: student.cppm  Version: 1.0
-// Created: Yuxin Zhou   1946296724@qq.com   2026-1-16
-// Description:
-// Change Log:
-//     [v0.1.1] Yuxin Zhou 1946296724@qq.com  2026-1-16
+export module registrar:student;
+import std;
+import :course;
 
-export module registrar:student; // 关联到Student模块
-import course;
+using std::vector;
+using std::string;
+using std::print;
+using std::format;
+
+export class Student {
+public:
+    Student(const string& id, const string& name);
+
+    bool hasId(const string& id);
+    bool addCourse(Course* course);
+    void removeCourse(Course* course);
+    void showCourses() const;
+    void showInfo() const;
+
+    void addGrade(const string& courseId, float grade);
+    float getGrade(const string& courseId) const;
+    void showGrades() const;
 
 private:
-    std::string name;
-    double credit;
-    int currentStudentNumber;
-    int maximum;
-
-public:
-    std::string getName() const { return name; }
-    double getCredit() const { return credit; }
-    int getCurrentStudentNumber() const { return currentStudentNumber; }
-    int getMaximum() const { return maximum; }
-    bool addStudent()
-    bool removeStudent()
+    string m_id;
+    string m_name;
+    vector<Course*> _courses;
+    vector<std::pair<string, float>> _grades; // 课程ID-成绩对
 };
 
-bool addStudent() {
-    if (currentStudentNumber < maximum) {
-        currentStudentNumber++;
+Student::Student(const string& id, const string& name)
+    : m_id(id), m_name(name)
+{}
+
+bool Student::addCourse(Course* course) {
+    // 检查是否已选此课程
+    for (auto c : _courses) {
+        if (c == course) {
+            return false;
+        }
+    }
+
+    if (course->addStudent(this)) {
+        _courses.push_back(course);
         return true;
     }
     return false;
 }
-bool removeStudent() {
-    if (currentStudentNumber > 0) {
-        currentStudentNumber--;
-        return true;
-    }
-    return false;
-}
 
-void Student::addCourse(Course& course) {
-    const std::string courseName = course.getName();
-    if (courseGrade.find(courseName) == courseGrade.end()) {
-        if (course.addStudent()) {
-            courseGrade[courseName] = 0;
-            currentCredit += course.getCredit();
-            print("{} 成功选课程：{}，当前学分：{:.1f}", name, courseName, currentCredit);
-        } else {
-            print("{} 选课失败：{} 已达最大容量！", name, courseName);
+void Student::removeCourse(Course* course) {
+    for (auto it = _courses.begin(); it != _courses.end(); ++it) {
+        if (*it == course) {
+            course->removeStudent(this);
+            _courses.erase(it);
+            break;
         }
-    } else {
-        print("{} 选课失败：已选过课程 {}！", name, courseName);
     }
 }
 
-// 退课方法
-void Student::cancelCourse(Course& course) {
-    const std::string courseName = course.getName();
-    auto it = courseGrade.find(courseName);
-    if (it != courseGrade.end()) {
-        if (course.removeStudent()) {
-            currentCredit -= course.getCredit();
-            courseGrade.erase(it);
-            print("{} 成功退课：{}，当前学分：{:.1f}", name, courseName, currentCredit);
-        } else {
-            print("{} 退课失败：课程 {} 无学生可移除！", name, courseName);
-        }
-    } else {
-        print("{} 退课失败：未选过课程 {}！", name, courseName);
-    }
-}
-
-// 展示已选课
-void Student::showSelectedCourse() const {
-    print("\n【{}（学号：{}）已选课程】", name, id);
-    if (courseGrade.empty()) {
-        print("暂无已选课程");
+void Student::showCourses() const {
+    if (_courses.empty()) {
+        print("暂无课程\n");
         return;
     }
-    for (const auto& [courseName, grade] : courseGrade) {
-        std::string gradeStr = (grade == 0) ? "未录入" : std::to_string(grade);
-        print("课程名：{} | 成绩：{}", courseName, gradeStr);
+
+    print("学生{}的课程表:\n", m_name);
+    for (auto course : _courses) {
+        print("课程号: {}  课程名: {}  学分: {}  教师: {}\n",
+            course->m_id, course->m_name, course->m_credit, course->m_teacher);
     }
-    print("当前总学分：{:.1f}", currentCredit);
 }
 
-// 展示可选课
-void Student::showAvailableCourse(const std::vector<Course>& allCourses) const {
-    print("\n【{}（学号：{}）可选课程】", name, id);
-    bool hasAvailable = false;
-    const auto selectedCourses = getSelectedCourseNames();
-    for (const auto& course : allCourses) {
-        if (std::find(selectedCourses.begin(), selectedCourses.end(), course.getName()) == selectedCourses.end() &&
-            course.getCurrentStudentNumber() < course.getMaximum()) {
-            int remaining = course.getMaximum() - course.getCurrentStudentNumber();
-            print("课程名：{} | 学分：{:.1f} | 剩余容量：{}",
-                  course.getName(), course.getCredit(), remaining);
-            hasAvailable = true;
+void Student::showInfo() const {
+    print("{}   {}\n", m_id, m_name);
+}
+
+void Student::addGrade(const string& courseId, float grade) {
+    for (auto& g : _grades) {
+        if (g.first == courseId) {
+            g.second = grade;
+            return;
         }
     }
-    if (!hasAvailable) {
-        print("暂无可选课程");
+    m_grades.emplace_back(courseId, grade);
+}
+
+float Student::getGrade(const string& courseId) const {
+    for (const auto& g : _grades) {
+        if (g.first == courseId) {
+            return g.second;
+        }
+    }
+    return -1; // 没有成绩
+}
+
+void Student::showGrades() const {
+    if (_grades.empty()) {
+        print("暂无成绩\n");
+        return;
+    }
+
+    print("学生{}的成绩单:\n", m_name);
+    for (const auto& g : _grades) {
+        print("课程号: {}  成绩: {}\n", g.first, g.second);
     }
 }
 
+bool Student::hasId(string id)
+{
+    return id == m_id;
+}

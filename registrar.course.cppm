@@ -1,62 +1,125 @@
-// File: course.cppm  Version: 1.0
-// Created: Yuxin Zhou   1946296724@qq.com   2026-1-16
-// Description:
-// Change Log:
-//     [v0.1.1] Yuxin Zhou 1946296s724@qq.com  2026-1-16
+export module registrar:course;
+import std;
+import :student;
+import :teacher;
 
-export module registrar:teacher;
-import course;
-import student;
+using std::print;
+using std::vector;
+using std::string;
+using std::format;
 
-// 私有属性id/name，公有方法
-export class Teacher {
-private:
-    int id;
-    std::string name;
-
+export class Course {
 public:
-    // 构造函数（初始化id和name）
-    Teacher(int teacherId, std::string_view teacherName)
-        : id(teacherId), name(teacherName) {}
+    Course(const string& id, const string& name, int credit, Teacher* teacher, int maximum);
 
-    // 展示课程信息
-    void courseMessage(const Course& course) const;
+    const string& getTeacherName() const;
+    bool hasId(const string& id);
+    bool addStudent(Student* student);
+    void removeStudent(Student* student);
+    void showStudents() const;
+    void setStudentGrade(Student* student, float grade);
+    void showInfo() const;
 
-    // 为学生添加课程成绩
-    void addCourseGrade(Student& student, const Course& course, float grade);
+    void changeCapacityTo(int newCapacity);
 
-    // 展示课程成绩
-    void showCourseGrade(const Student& student, const Course& course) const;
-
-    int getId() const { return id; }
-    const std::string& getName() const { return name; }
+private:
+    string m_id;
+    string m_name;
+    int m_credit;
+    Teacher* m_teacher;
+    int m_maximum;
+    vector<Student*> _students;
+    vector<std::pair<Student*, float>> _grades; // 学生-成绩对
+    void changeCapacity(int newCapacity);
 };
 
-// 实现courseMessage：使用print函数输出课程信息
-void Teacher::courseMessage(const Course& course) const {
-    print("【教师{}】课程信息：名称={} 学分={} 容量={}",
-          name, course.getName(), course.getCredit(), course.getMaximum());
+Course::Course(const string& id, const string& name, int credit, Teacher* teacher, int maximum)
+    : m_id(id), m_name(name), m_credit(credit), m_teacher(teacher), m_maximum(maximum)
+{}
+
+const string& Course::getTeacherName() const {
+    static string empty;
+    return m_teacher ? m_teacher->getName() : empty;
 }
 
-// 实现addCourseGrade：使用print函数输出成绩录入信息
-void Teacher::addCourseGrade(Student& student, const Course& course, float grade) {
-    if (grade < 0.0f || grade > 100.0f) {
-        throw std::invalid_argument("成绩必须在0-100之间");
+bool Course::addStudent(Student* student) {
+    if (_students.size() >= m_maximum) {
+        print("课程《{}》已达人数上限!\n", m_name);
+        return false;
     }
-    student.setCourseGrade(course.getId(), grade);
-    print("【教师{}】为学生{}的课程《{}》录入成绩：{}",
-          name, student.getName(), course.getName(), grade);
+
+    // 检查是否已选
+    for (auto s : _students) {
+        if (s == student) {
+            print("学生{}已选此课程!\n", student->m_name);
+            return false;
+        }
+    }
+
+    _students.push_back(student);
+    print("学生{}成功选择课程《{}》\n", student->m_name, m_name);
+    return true;
 }
 
-// 实现showCourseGrade：使用print函数输出成绩展示信息
-void Teacher::showCourseGrade(const Student& student, const Course& course) const {
-    try {
-        float grade = student.getCourseGrade(course.getId());
-        print("【教师{}】学生{}的课程《{}》成绩：{}",
-              name, student.getName(), course.getName(), grade);
-    } catch (const std::out_of_range& e) {
-        print("【教师{}】学生{}未修读课程《{}》",
-              name, student.getName(), course.getName());
+void Course::removeStudent(Student* student) {
+    for (auto it = _students.begin(); it != _students.end(); ++it) {
+        if (*it == student) {
+            _students.erase(it);
+            print("学生{}已从课程《{}》中移除\n", student->m_name, m_name);
+
+            // 同时移除成绩
+            for (auto g = _grades.begin(); g != _grades.end(); ++g) {
+                if (g->first == student) {
+                    _grades.erase(g);
+                    break;
+                }
+            }
+            break;
+        }
     }
 }
-s
+
+void Course::showStudents() const {
+    if (_students.empty()) {
+        print("暂无学生选课\n");
+        return;
+    }
+
+    for (auto student : _students) {
+        print("学号: {}  姓名: {}\n", student->m_id(), student->m_name);
+    }
+}
+
+void Course::setStudentGrade(Student* student, float grade) {
+    for (auto& g : _grades) {
+        if (g.first == student) {
+            g.second = grade;
+            student->addGrade(m_id, grade);
+            return;
+        }
+    }
+    _grades.emplace_back(student, grade);
+    student->addGrade(m_id, grade);
+}
+
+void Course::showInfo() const {
+    print("{}   {}  学分:{}  教师:{}  容量:{}/{}\n",
+        m_id, m_name, m_credit, m_teacher, _students.size(), m_maximum);
+}
+
+void Course::changeCapacityTo(int newCapacity) {
+    if (newCapacity <= 0) {
+        print("课容量必须为正数\n");
+        return;
+    }
+    changeCapacity(newCapacity);
+    print("课程《{}》容量已修改为{}\n", m_name, newCapacity);
+}
+
+bool Course::hasId(string id){
+    return id == m_id;
+}
+
+void Course::changeCapacity(int newCapacity){
+    m_maximum = newCapacity;
+}
