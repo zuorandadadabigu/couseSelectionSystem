@@ -1,3 +1,8 @@
+// Module registrar:ui
+// File: registrar.ui.cppm   Version: 0.1.0   License: AGPLv3
+// Created:       2026-01-17 11:26:34
+// Description:
+//
 export module registrar:ui;
 import std;
 import registrar;
