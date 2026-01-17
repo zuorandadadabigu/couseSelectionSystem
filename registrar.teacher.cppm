@@ -65,6 +65,7 @@ void Teacher::addCourseGrade(Student& student, float grade) {
     m_course->setStudentGrade(&student, grade);
     print("教师{}为学生{}的课程《{}》录入成绩: {}\n",
         m_name, student.m_name(), m_course->m_name(), grade);
+    Registrar::getInstance().saveStudentGrade(student.m_id,m_course->m_id,grade);
 }
 
 bool Teacher::hasId(string id)

@@ -119,6 +119,7 @@ void Course::changeCapacityTo(int newCapacity) {
     }
     changeCapacity(newCapacity);
     print("课程《{}》容量已修改为{}\n", m_name, newCapacity);
+    Registrar::getInstance().updateCourseCapacity(m_id,newCapacity);
 }
 
 bool Course::hasId(string id){

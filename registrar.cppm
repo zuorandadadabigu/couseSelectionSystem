@@ -27,6 +27,11 @@ public:
     Sectary *findSectaryById(const string &id);
     Teacher *findTeacherById(const string &id);
 
+    bool saveStudent(Student* student);
+    bool saveStudentGrade(const string& studentId, const string& courseId, float grade);
+    bool updateCourseCapacity(const string& courseId, int newCapacity);
+    static Registrar& getInstance();
+
     // 关联课程和教师
     void assignCourseToTeacher(Course* course, Teacher* teacher);
 
@@ -61,7 +66,7 @@ void Registrar::initialize() {
     auto teacher2 = make_unique<Teacher>("T002", "冯玉");
     auto teacher3 = make_unique<Teacher>("T003", "成临");
 
-    // 创建课程并关联教师
+    // 创建课程
     auto course1 = make_unique<Course>("CS101", "C Programming", 3, teacher1.get(), 30);
     auto course2 = make_unique<Course>("CS201", "Data structure", 4, teacher2.get(), 30);
     auto course3 = make_unique<Course>("MATH101", "Advanced Math", 5, teacher3.get(), 25);
@@ -83,6 +88,15 @@ void Registrar::initialize() {
 
     // 秘书
     _sectary.push_back(make_unique<Sectary>(*this, "S001", "王秘书"));
+
+    // 插入数据库（直接调用，不检查）
+    auto& db = g_database;
+    if (db.isConnected()) {
+        for (const auto& student : _students) db.saveStudent(student.get());
+        for (const auto& teacher : _teachers) db.saveTeacher(teacher.get());
+        for (const auto& course : _courses) db.saveCourse(course.get());
+        for (const auto& sectary : _sectary) db.saveSectary(sectary.get());
+    }
 
     print("初始化完成.\n");
 }
@@ -133,4 +147,21 @@ Teacher *Registrar::findTeacherById(const string &id) {
 
 void Registrar::assignCourseToTeacher(Course* course, Teacher* teacher) {
     teacher->setCourse(course);
+}
+
+bool Registrar::saveStudent(Student* student) {
+    return g_database.saveStudent(student);
+}
+
+bool Registrar::saveStudentGrade(const string& studentId, const string& courseId, float grade) {
+    return g_database.saveStudentGrade(studentId, courseId, grade);
+}
+
+bool Registrar::updateCourseCapacity(const string& courseId, int newCapacity) {
+    return g_database.updateCourseCapacity(courseId, newCapacity);
+}
+
+Registrar& Registrar::getInstance() {
+    static Registrar instance;
+    return instance;
 }

@@ -47,6 +47,7 @@ bool Student::addCourse(Course* course) {
 
     if (course->addStudent(this)) {
         _courses.push_back(course);
+        Registrar::getInstance().saveStudent(this);
         return true;
     }
     return false;
@@ -57,6 +58,7 @@ void Student::removeCourse(Course* course) {
         if (*it == course) {
             course->removeStudent(this);
             _courses.erase(it);
+            Registrar::getInstance().saveStudent(this);
             break;
         }
     }
@@ -83,10 +85,12 @@ void Student::addGrade(const string& courseId, float grade) {
     for (auto& g : _grades) {
         if (g.first == courseId) {
             g.second = grade;
+            Registrar::getInstance().saveStudentGrade(m_id,courseId,grade);
             return;
         }
     }
     _grades.emplace_back(courseId, grade);
+    Registrar::getInstance().saveStudentGrade(m_id,courseId,grade);
 }
 
 float Student::getGrade(const string& courseId) const {
