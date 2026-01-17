@@ -12,27 +12,37 @@ add_executable(course_select
     #math.cpp                              # 模块实现单元
     main.cpp
 
-
 )
 
-set(REGISTRAR_MODULES
-    #${MODULE_LIB_DIR1}/utils.cppm         #添加模块库的模块接口单元
-    #math.cppm                             # 模块接口单元
-    registrar.cppm
+set(PRESENTATION
+   #表现层
     registrar.ui.cppm
-
+)
+set(APPLICATION
+    #应用层
+    registrar.cppm
+    base.cppm
+)
+set(DAMAIN
+    #领域层
     registrar.student.cppm
     registrar.teacher.cppm
     registrar.sectary.cppm
     registrar.course.cppm
 )
-
-source_group("registrar" FILES ${REGISTRAR_MODULES})
+set(DATA
+    #数据管理层
+    registrar.database.cppm
+)
+source_group("presentation" FILES ${PRESENTATION})
+source_group("application" FILES ${APPLICATION})
+source_group("domain" FILES ${DAMAIN})
+source_group("data" FILES ${DATA})
 target_sources(course_select  PRIVATE FILE_SET cxx_modules TYPE CXX_MODULES
     BASE_DIRS                              # 配置BASE_DIRS，用于组织构建输出目录，以便构建不同目录中(同名的)模块文件.
         #${MODULE_LIB_DIR1}
         ${CMAKE_CURRENT_SOURCE_DIR}
-    FILES ${REGISTRAR_MODULES}
+    FILES ${PRESENTATION} ${APPLICATION} ${DAMAIN} ${DATA}
 )
 target_compile_features(course_select PRIVATE cxx_std_23)
 

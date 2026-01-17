@@ -1,17 +1,14 @@
 // Module registrar
 // File: registrar.cppm   Version: 0.1.0   License: AGPLv3
-// Created:       2026-01-17
-// Description:
+// Created: mingyatong      2026-01-17
+// Description:To realize the function of controller
 //
 
 export module registrar;
 
 import std;
 import :ui;
-import :sectary;
-import :teacher;
-import :student;
-import :course;
+import :base;
 
 using std::vector;
 using std::string;

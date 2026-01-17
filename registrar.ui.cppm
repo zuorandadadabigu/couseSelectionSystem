@@ -1,15 +1,12 @@
-// Module registrar:ui
+// Module registrar:ui -- Class Ui
 // File: registrar.ui.cppm   Version: 0.1.0   License: AGPLv3
-// Created:       2026-01-17 11:26:34
-// Description:
+// Created:mingyatong       2026-01-17 11:26:34
+// Description:To realize the function of service-choose.
 //
 export module registrar:ui;
 import std;
 import registrar;
-import :sectary;
-import :teacher;
-import :student;
-import :course;
+import :base;
 
 using std::print;
 using std::string;

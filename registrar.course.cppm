@@ -1,7 +1,7 @@
-// Module registrar:course
+// Module registrar:course --Class Course
 // File: registrar.course.cppm   Version: 0.1.0   License: AGPLv3
-// Created:       2026-01-17
-// Description:
+// Created: zhouyuxin      2026-01-17
+// Description: To realize the function of courses.
 //
 export module registrar:course;
 import std;

@@ -1,7 +1,7 @@
-// Module registrar:sectary
+// Module registrar:sectary -- Class Sectary
 // File: registrar.sectary.cppm   Version: 0.1.0   License: AGPLv3
-// Created:       2026-01-17
-// Description:
+// Created:mingyatong       2026-01-17
+// Description:To realize the function of sectary.
 //
 export module registrar:sectary;
 import std;

@@ -1,7 +1,7 @@
-// Module registrar:student
+// Module registrar:student -- Class Student
 // File: registrar.student.cppm   Version: 0.1.0   License: AGPLv3
-// Created:       2026-01-17
-// Description:
+// Created: zhouyuxin      2026-01-17
+// Description:To realize the function of students.
 //
 export module registrar:student;
 import std;
