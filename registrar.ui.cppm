@@ -170,8 +170,8 @@ void Ui::service_student(Student* student, int choice) {
             print("\n待选课程列表:\n");
             for (const auto& course : m_registrar._courses) {
                 print("课程号: {}  课程名: {}  学分: {}  教师: {}  已选人数: {}/{}\n",
-                    course->m_id(), course->m_name, course->m_credit,
-                    course->m_teacher(), course->_studens.size(), course->m_maximum);
+                    course->m_id, course->m_name, course->m_credit,
+                    course->m_teacher, course->_students.size(), course->m_maximum);
             }
             break;
         }
