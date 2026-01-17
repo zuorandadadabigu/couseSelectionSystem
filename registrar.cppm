@@ -88,6 +88,14 @@ void Registrar::initialize() {
 }
 
 int Registrar::exec() {
+    //连接数据库
+    auto& db = g_database;
+    if (!db.isConnected()) {
+        print("数据库连接失败\n");
+        return 1;
+    }
+
+    print("数据库连接成功\n");
     return m_ui->exec();
 }
 
